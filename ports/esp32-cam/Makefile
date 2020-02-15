@@ -171,6 +171,11 @@ INC_ESPCOMP += -I$(ESPCOMP)/app_update/include
 INC_ESPCOMP += -I$(ESPCOMP)/pthread/include
 INC_ESPCOMP += -I$(ESPCOMP)/smartconfig_ack/include
 INC_ESPCOMP += -I$(ESPCOMP)/sdmmc/include
+INC_ESPCOMP += -I$(ESPCOMP)/esp32-camera/driver/include
+INC_ESPCOMP += -I$(ESPCOMP)/esp32-camera/driver/private_include
+INC_ESPCOMP += -I$(ESPCOMP)/esp32-camera/conversions/include
+INC_ESPCOMP += -I$(ESPCOMP)/esp32-camera/conversions/private_include
+INC_ESPCOMP += -I$(ESPCOMP)/esp32-camera/sensors/private_include
 
 ifeq ($(ESPIDF_CURHASH),$(ESPIDF_SUPHASH_V4))
 INC_ESPCOMP += -I$(ESPCOMP)/esp_common/include
@@ -351,6 +356,7 @@ SRC_C = \
 	mpthreadport.c \
 	machine_rtc.c \
 	machine_sdcard.c \
+	modcamera.c \
 	$(wildcard $(BOARD_DIR)/*.c) \
 	$(SRC_MOD)
 
@@ -519,6 +525,12 @@ ESPIDF_WPA_SUPPLICANT_O = $(patsubst %.c,%.o,\
 	$(wildcard $(ESPCOMP)/wpa_supplicant/src/*/*.c) \
 	)
 
+ESP32_CAM_O = $(patsubst %.c,%.o,\
+        $(wildcard $(ESPCOMP)/esp32-camera/driver/*.c) \
+        $(wildcard $(ESPCOMP)/esp32-camera/sensors/*.c) \
+        $(wildcard $(ESPCOMP)/esp32-camera/conversions/*.c) \
+        )
+
 ESPIDF_SDMMC_O = $(patsubst %.c,%.o,$(wildcard $(ESPCOMP)/sdmmc/*.c))
 
 ifeq ($(ESPIDF_CURHASH),$(ESPIDF_SUPHASH_V4))
@@ -632,6 +644,7 @@ $(eval $(call gen_espidf_lib_rule,mdns,$(ESPIDF_MDNS_O)))
 $(eval $(call gen_espidf_lib_rule,wpa_supplicant,$(ESPIDF_WPA_SUPPLICANT_O)))
 $(eval $(call gen_espidf_lib_rule,sdmmc,$(ESPIDF_SDMMC_O)))
 $(eval $(call gen_espidf_lib_rule,bt_nimble,$(ESPIDF_BT_NIMBLE_O)))
+$(eval $(call gen_espidf_lib_rule,esp32_cam,$(ESP32_CAM_O)))
 
 ifeq ($(ESPIDF_CURHASH),$(ESPIDF_SUPHASH_V4))
 $(eval $(call gen_espidf_lib_rule,esp_common,$(ESPIDF_ESP_COMMON_O)))
